@@ -1,0 +1,20 @@
+service KeyValueGRPC {
+    rpc ReplicateEntry(ReplicateEntryRequest) returns (ReplicateEntryResponse) {}
+    rpc JoinCluster(JoinClusterRequest) returns (JoinClusterResponse) {}
+}
+
+message JoinClusterResponse{
+  //  ...
+}
+
+message JoinClusterRequest {
+  //  ...
+}
+
+message ReplicateEntryRequest {
+  //  ...
+}
+
+message ReplicateEntryResponse {
+  //  ...
+}

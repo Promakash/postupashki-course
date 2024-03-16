@@ -1,0 +1,1 @@
+add_executable_test(test_server_socket test.cpp server.h)

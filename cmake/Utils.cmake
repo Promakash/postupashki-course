@@ -1,4 +1,5 @@
 function(add_executable_test TARGET)
+    find_package(Catch2 3 REQUIRED)
     add_executable(${TARGET} ${ARGN})
     target_link_libraries(${TARGET} PRIVATE Catch2::Catch2WithMain)
 endfunction()

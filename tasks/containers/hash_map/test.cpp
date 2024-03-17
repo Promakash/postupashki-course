@@ -2,7 +2,7 @@
 
 #include "random_utils.h"
 
-#include "hash_map.h"
+#include "hash_table.h"
 
 #include <unordered_map>
 

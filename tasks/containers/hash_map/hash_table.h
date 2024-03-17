@@ -5,7 +5,7 @@
 #include <cstddef>
 
 template <typename Key, typename Value>
-class HashMap {
+class HashTable {
 public:
     struct Entry {
         Key key;

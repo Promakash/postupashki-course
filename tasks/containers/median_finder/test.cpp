@@ -36,27 +36,6 @@ void CheckMedian(std::vector<int> test, MedianFinder &medianFinder) {
     REQUIRE((medianFinder.Find() == test[test.size() / 2] || medianFinder.Find() == test[(test.size() - 1) / 2]));
 }
 
-class TestLogger {
-public:
-    TestLogger(std::string testName)
-            : testName_(std::move(testName)) {
-        std::cout << "TEST running: " << testName_ << std::endl;
-        start = std::chrono::high_resolution_clock::now();
-    }
-
-    ~TestLogger() {
-        auto end = std::chrono::high_resolution_clock::now();
-
-        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-
-        std::cout << "TEST " << testName_ << " HAS BEEN PASSED IN " << ms << "ms" << std::endl;
-    }
-
-private:
-    std::string testName_;
-    std::chrono::high_resolution_clock::time_point start;
-};
-
 TEST_CASE("No Duplicates") {
     allowDuplicates = false;
     SECTION("Simple test") {

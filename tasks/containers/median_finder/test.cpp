@@ -30,10 +30,10 @@ std::vector<int> GenerateVector(size_t n, size_t restrict = 1'000'000) {
 
 void CheckMedian(std::vector<int> test, MedianFinder &medianFinder) {
     std::sort(test.begin(), test.end());
-    REQUIRE((medianFinder.Find() == test[test.size() / 2] || medianFinder.Find() == test[(test.size() - 1) / 2]));
     if (test.empty()) {
-        REQUIRE(1 == 1);
+        return;
     }
+    REQUIRE((medianFinder.Find() == test[test.size() / 2] || medianFinder.Find() == test[(test.size() - 1) / 2]));
 }
 
 class TestLogger {
@@ -60,7 +60,6 @@ private:
 TEST_CASE("No Duplicates") {
     allowDuplicates = false;
     SECTION("Simple test") {
-        TestLogger logger("simple_test");
 
         std::vector<int> test = {10, 3, 4, 5, 6, 13, 54};
 
@@ -105,7 +104,6 @@ TEST_CASE("No Duplicates") {
     }
 
     SECTION("Insert and delete test") {
-        TestLogger logger("InsertDeleteAllTest");
 
         MedianFinder medianFinder;
 
@@ -126,7 +124,6 @@ TEST_CASE("No Duplicates") {
     }
 
     SECTION("Stress test") {
-        TestLogger logger("StressTest");
 
         std::vector<int> test;
         test.reserve(1'000'000);
@@ -155,9 +152,8 @@ TEST_CASE("No Duplicates") {
 }
 
 TEST_CASE("With duplicates") {
-    allowDuplicates = false;
+    allowDuplicates = true;
     SECTION("Simple test") {
-        TestLogger logger("simple_test");
 
         std::vector<int> test = {10, 3, 4, 5, 6, 13, 54};
 
@@ -202,7 +198,6 @@ TEST_CASE("With duplicates") {
     }
 
     SECTION("Insert and delete test") {
-        TestLogger logger("InsertDeleteAllTest");
 
         MedianFinder medianFinder;
 
@@ -223,7 +218,6 @@ TEST_CASE("With duplicates") {
     }
 
     SECTION("Stress test") {
-        TestLogger logger("StressTest");
 
         std::vector<int> test;
         test.reserve(1'000'000);
@@ -246,8 +240,8 @@ TEST_CASE("With duplicates") {
                 CheckMedian(test, medianFinder);
             }
         }
-    }SECTION("Extra duplicates") {
-        TestLogger logger("ExtraDuplicatesTest");
+    }
+    SECTION("Extra duplicates") {
 
         std::vector<int> test;
         test.reserve(1'000'000);

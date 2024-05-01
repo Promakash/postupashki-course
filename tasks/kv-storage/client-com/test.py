@@ -30,3 +30,5 @@ def test_http_kv():
 
     resp = requests.get(f'{kv_addr}/entry', params={"key": "lolkek228"})
     assert resp.status_code == 404
+
+test_http_kv();

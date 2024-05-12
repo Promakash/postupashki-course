@@ -27,24 +27,16 @@ public:
         //Takes ip_adress from request
         std::string Address_Request = Request->ip_adress();
 
-        //if ip_adress hasn't special symbol at back ('N'), copy entire storage and adresses of gRPC servers
-        if (Address_Request.back() != 'N') {
-            for (const auto& i : Storage_) {
-                Response->add_keys(i.first);
-                Response->add_values(i.second);
-            }
-            auto adresses = Storage_.GetAddresses();
-            for (const auto& i : adresses) {
-                std::cout << "IP: " << i << std::endl;
-                Response->add_ip_adresses(i);
-            }
+        //Forms copy of storage and array of ip's to response
+        for (const auto& i : Storage_) {
+            Response->add_keys(i.first);
+            Response->add_values(i.second);
         }
-        //if ip_adress has special symbol at back ('N'), it means server need to estabilish connection with client and save its adress;
-        else {
-            Address_Request.pop_back();
-            //Debug info to signalize new server that need connection
-            std::cout << "Wow new ip - haven't seen it before - " << Address_Request << std::endl;
+        for (const auto& i : Storage_.GetAddresses()) {
+            std::cout << "IP: " << i << std::endl;
+            Response->add_ip_adresses(i);
         }
+        //Estabilish connection and save ip of replica
         gRPC_Client_.EstabilishConnection(Address_Request);
         Storage_.AddReplicaAddress(Address_Request);
         return Status::OK;
@@ -54,6 +46,20 @@ public:
     Status ReplicateEntry(ServerContext* Context, const ReplicateEntryRequest* Request, ReplicateEntryResponse* Response) {
         bool Insertion_Result = Storage_.AddEntry(Request->key(), Request->value());
         Response->set_result(Insertion_Result);
+        return Status::OK;
+    }
+
+    Status InformCluster(ServerContext* Context, const InformClusterRequest* Request, InformClusterResponse* Response){
+        //Takes ip_adress from request
+        std::string Address_Request = Request->ip_adress();
+
+        //Debug info to signalize new server that need connection
+        std::cout << "Wow new ip - haven't seen it before - " << Address_Request << std::endl;
+        
+        //Estabilish connection and save ip of replica
+        gRPC_Client_.EstabilishConnection(Address_Request);
+        Storage_.AddReplicaAddress(Address_Request);
+        Response->set_result(true);
         return Status::OK;
     }
 

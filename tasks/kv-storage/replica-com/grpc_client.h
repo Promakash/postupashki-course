@@ -27,11 +27,11 @@ private:
     
     //Asks every known gRPC server to open a channel with Client's instance
     void InformCluster() {
-        JoinClusterRequest Request;
-        JoinClusterResponse Response;
+        InformClusterRequest Request;
+        InformClusterResponse Response;
 
         //Set special symbol at end of adress to point that request is not asking for copying storage.
-        Request.set_ip_adress(gRPC_Address_ + 'N');
+        Request.set_ip_adress(gRPC_Address_);
         auto it = Current_Connections_.begin();
 
         //Increase iterator because begin() points to a replica that has already been connected
@@ -41,7 +41,7 @@ private:
 
             ClientContext Context;
             //Sends request
-            Status Status = (*it).JoinCluster(&Context, Request, &Response);
+            Status Status = (*it).InformCluster(&Context, Request, &Response);
 
             if (!Status.ok()) {
                 //erase() method returns next iterator after deleted iterator. Delete adress from storage_.

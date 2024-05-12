@@ -65,10 +65,12 @@ private:
                 }
 
                 std::string key = key_query;
-                //GetValue throws invalid_argument exception if couldn't find by key
-                std::string value = storage_.GetValue(key);
+                std::pair<bool, std::string> Search_Result = storage_.GetValue(key);
+                if (Search_Result.first == false){
+                    return crow::response(404, "Nothing is found by this key!");
+                }
                 //Forms answer if everything is ok
-                crow::json::wvalue json_response({"value", value});
+                crow::json::wvalue json_response({"value", Search_Result.second});
 
                 //return json and 200(OK)
                 return crow::response(std::move(json_response));

@@ -42,7 +42,7 @@ private:
             if (!status.ok()) {
                 //erase() method returns next iterator after deleted iterator. Delete adress from storage_.
                 it = current_connections.erase(it);
-                storage_.DeleteReplicaAdress(context.peer());
+                storage_.DeleteReplicaAddress(context.peer());
 
                 //No need to increment iterator because of erase() method
                 continue;
@@ -88,10 +88,10 @@ public:
 
                 //erase() method returns next iterator after deleted iterator. Delete adress from storage_.
                 it = current_connections.erase(it);
-                storage_.DeleteReplicaAdress(context.peer());
+                storage_.DeleteReplicaAddress(context.peer());
 
                 std::cout << "Other connections left: ";
-                for (auto j : storage_.getAdresses()) {
+                for (auto j : storage_.GetAddresses()) {
                     std::cout << j << std::endl;
                 }
                 std::cout << std::endl;
@@ -131,7 +131,7 @@ public:
 
         //If conntection is succesfull - saving Stub and channel for future requests. Saving ip-adress of replica to send it by request later to new replica
         current_connections.push_back({ ReplicaStub, ReplicaChannel });
-        storage_.AddReplicaAdress(joinReplicaAddr);
+        storage_.AddReplicaAddress(joinReplicaAddr);
 
         //Fill kv-storage with key, values and ip-adresses of servers
         for (const auto& i : response.keys()) {
@@ -141,7 +141,7 @@ public:
         }
         for (const auto& i : response.ip_adresses()) {
             EstabilishConnection(i);
-            storage_.AddReplicaAdress(i);
+            storage_.AddReplicaAddress(i);
         }
         //Call function to send its own ip to every known server
         InformCluster();

@@ -29,7 +29,7 @@ public:
                 response->add_keys(i.first);
                 response->add_values(i.second);
             }
-            auto adresses = storage_.getAdresses();
+            auto adresses = storage_.GetAddresses();
             for (const auto& i : adresses) {
                 std::cout << "IP: " << i << std::endl;
                 response->add_ip_adresses(i);
@@ -42,7 +42,7 @@ public:
             std::cout << "Wow new ip - haven't seen it before - " << adress_request << std::endl;
         }
         grpc_client_.EstabilishConnection(adress_request);
-        storage_.AddReplicaAdress(adress_request);
+        storage_.AddReplicaAddress(adress_request);
         return Status::OK;
     }
 

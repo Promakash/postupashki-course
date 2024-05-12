@@ -16,7 +16,7 @@ private:
     KeyValueClient& gRPC_Client_;
     std::string Ip_Address_;
 public:
-    KeyValueServiceImpl(KeyValueStorage& Storage, std::string_view Ip_Address, KeyValueClient& gRPC_Client)
+    KeyValueServiceImpl(KeyValueStorage& Storage, const std::string& Ip_Address, KeyValueClient& gRPC_Client)
         : Storage_(Storage), gRPC_Client_(gRPC_Client)
     {
         Ip_Address_ = Ip_Address;
@@ -55,7 +55,7 @@ public:
 
         //Debug info to signalize new server that need connection
         std::cout << "Wow new ip - haven't seen it before - " << Address_Request << std::endl;
-        
+
         //Estabilish connection and save ip of replica
         gRPC_Client_.EstabilishConnection(Address_Request);
         Storage_.AddReplicaAddress(Address_Request);

@@ -14,7 +14,7 @@ class KeyValueClient {
 private:
     KeyValueStorage& Storage_;
     std::string gRPC_Address_;
-    std::list<std::pair<KeyValueGRPC::Stub, std::shared_ptr<Channel>>> Current_Connections_;
+    std::list<KeyValueGRPC::Stub> Current_Connections_;
 public:
 
     KeyValueClient(KeyValueStorage& Storage, const std::string& gRPC_Address)
@@ -41,9 +41,9 @@ private:
 
             ClientContext Context;
             //Sends request
-            Status status = (*it).first.JoinCluster(&Context, Request, &Response);
+            Status Status = (*it).JoinCluster(&Context, Request, &Response);
 
-            if (!status.ok()) {
+            if (!Status.ok()) {
                 //erase() method returns next iterator after deleted iterator. Delete adress from storage_.
                 it = Current_Connections_.erase(it);
                 Storage_.DeleteReplicaAddress(Context.peer());
@@ -59,12 +59,12 @@ public:
     //Creates new gRPC's connection to given instance
     void EstabilishConnection(const std::string& Ip_address) {
         auto New_Channel = grpc::CreateChannel(Ip_address, grpc::InsecureChannelCredentials());
-        KeyValueGRPC::Stub new_stub(New_Channel);
-        Current_Connections_.push_back({ new_stub, New_Channel });
+        KeyValueGRPC::Stub New_Stub(New_Channel);
+        Current_Connections_.push_back(New_Stub);
     }
 
     //Sends gRPC's request to copy new Entry from HTTP server to every instance of known gRPC servers
-    void CopyEntry(const std::string& key, const std::string& value) {
+    void CopyEntry(const std::string& Key, const std::string& Value) {
 
         //Forms info for request
         ReplicateEntryRequest Request;
@@ -77,13 +77,13 @@ public:
         while (it != Current_Connections_.end()) {
             //Setting info to send
             ClientContext Context;
-            Request.set_key(key);
-            Request.set_value(value);
+            Request.set_key(Key);
+            Request.set_value(Value);
 
-            Status status = (*it).first.ReplicateEntry(&Context, Request, &Response);
+            Status Status = (*it).ReplicateEntry(&Context, Request, &Response);
             
             //If connection is lost - deletes it. Deletion happens locally.
-            if (!status.ok()) {
+            if (!Status.ok()) {
 
                 //Debug info 
                 std::cout << "List size: " << Current_Connections_.size() << std::endl;
@@ -126,15 +126,15 @@ public:
         JoinClusterResponse Response;
 
         //Sends request
-        Status status = ReplicaStub.JoinCluster(&Context, Request, &Response);
+        Status Status = ReplicaStub.JoinCluster(&Context, Request, &Response);
 
         //Without estabilished connection with replica throws exception
-        if (!status.ok()) {
-            throw std::invalid_argument("Wrong adress of replica!");
+        if (!Status.ok()) {
+            throw std::invalid_argument("Wrong address of replica!");
         }
 
         //If conntection is succesfull - saving Stub and channel for future requests. Saving ip-adress of replica to send it by request later to new replica
-        Current_Connections_.push_back({ ReplicaStub, ReplicaChannel });
+        Current_Connections_.push_back(ReplicaStub);
         Storage_.AddReplicaAddress(JoinReplicaAddr);
 
         //Fill kv-storage with key, values and ip-adresses of servers

@@ -3,7 +3,6 @@
 
 int main() {
     KeyValueStorage storage;
-
     KeyValueHTTPServer server(8000, storage);
     server.Start();
 }

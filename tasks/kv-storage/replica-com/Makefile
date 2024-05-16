@@ -22,6 +22,6 @@ test_fall_replica: build_app
 	pytest tests.py::TestServer::test_fall_replica
 	$(MAKE) clear_processes
 
-test_all: 
+test_all: build_app
 	pytest tests.py::TestServer
 	$(MAKE) clear_processes
